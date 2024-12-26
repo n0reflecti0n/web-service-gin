@@ -8,7 +8,6 @@ import (
 	"web-service-gin/controllers"
 	"web-service-gin/mapper"
 	"web-service-gin/repository"
-	"web-service-gin/routers"
 	"web-service-gin/service"
 )
 
@@ -25,14 +24,15 @@ func main() {
 	container := dig.New()
 
 	container.Provide(config.ConnectToDB)
-	container.Provide(routers.NewRouterInitializer)
+	container.Provide(config.NewRouterInitializer)
+
 	container.Provide(controllers.NewUserController)
 	container.Provide(service.NewUserService)
 	container.Provide(repository.NewUserRepository)
 	container.Provide(mapper.NewUserMapper)
 
 	// Invoke the handler and setup routes
-	err := container.Invoke(func(r *routers.RouterInitializer) {
+	err := container.Invoke(func(r *config.RouterInitializer) {
 		router := r.InitRouter()
 		if err := router.Run(":8080"); err != nil {
 			log.Fatal(err)
