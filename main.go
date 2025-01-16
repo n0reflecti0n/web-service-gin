@@ -5,10 +5,6 @@ import (
 	"go.uber.org/dig"
 	"log"
 	"web-service-gin/config"
-	"web-service-gin/controller"
-	"web-service-gin/mapper"
-	"web-service-gin/repository"
-	"web-service-gin/service"
 )
 
 func init() {
@@ -23,13 +19,7 @@ func main() {
 
 	container := dig.New()
 
-	container.Provide(config.ConnectToDB)
-	container.Provide(config.NewRouterInitializer)
-
-	container.Provide(controller.NewUserController)
-	container.Provide(service.NewUserService)
-	container.Provide(repository.NewUserRepository)
-	container.Provide(mapper.NewUserMapper)
+	config.PerformDependencyInjection(container)
 
 	// Invoke the handler and setup routes
 	err := container.Invoke(func(r *config.RouterInitializer) {
