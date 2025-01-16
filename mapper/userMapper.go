@@ -21,3 +21,13 @@ func (um UserMapper) ToUser(request web.UserRequest) dao.User {
 		CreatedDate: time.Now(),
 	}
 }
+
+func (um UserMapper) ToUserResponse(user dao.User) web.UserResponse {
+	return web.UserResponse{
+		Id:        user.Id,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
+		Age:       user.Age,
+	}
+}

@@ -20,3 +20,16 @@ func (us UserService) CreateUser(request web.UserRequest) int {
 
 	return us.userRepository.Save(&user)
 }
+
+func (us UserService) FindById(id int) (web.UserResponse, error) {
+	var response web.UserResponse
+
+	user, err := us.userRepository.FindById(int64(id))
+	if err != nil {
+		return response, err
+	}
+
+	response = us.userMapper.ToUserResponse(user)
+
+	return response, nil
+}

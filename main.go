@@ -5,7 +5,7 @@ import (
 	"go.uber.org/dig"
 	"log"
 	"web-service-gin/config"
-	"web-service-gin/controllers"
+	"web-service-gin/controller"
 	"web-service-gin/mapper"
 	"web-service-gin/repository"
 	"web-service-gin/service"
@@ -26,7 +26,7 @@ func main() {
 	container.Provide(config.ConnectToDB)
 	container.Provide(config.NewRouterInitializer)
 
-	container.Provide(controllers.NewUserController)
+	container.Provide(controller.NewUserController)
 	container.Provide(service.NewUserService)
 	container.Provide(repository.NewUserRepository)
 	container.Provide(mapper.NewUserMapper)

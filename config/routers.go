@@ -3,14 +3,14 @@ package config
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"web-service-gin/controllers"
+	"web-service-gin/controller"
 )
 
 type RouterInitializer struct {
-	userController *controllers.UserController
+	userController *controller.UserController
 }
 
-func NewRouterInitializer(uc *controllers.UserController) *RouterInitializer {
+func NewRouterInitializer(uc *controller.UserController) *RouterInitializer {
 	return &RouterInitializer{userController: uc}
 }
 
@@ -20,6 +20,7 @@ func (r RouterInitializer) InitRouter() *gin.Engine {
 	routerGroup := router.Group("/api")
 
 	routerGroup.GET("/", func(c *gin.Context) { c.String(http.StatusOK, "OK") })
+	routerGroup.GET("/user/:id", r.userController.FindUserById)
 	routerGroup.POST("/user", r.userController.CreateUser)
 
 	return router

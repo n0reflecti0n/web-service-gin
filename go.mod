@@ -5,7 +5,6 @@ go 1.23.4
 require github.com/gin-gonic/gin v1.10.0
 
 require (
-	github.com/google/wire v0.6.0
 	github.com/joho/godotenv v1.5.1
 	go.uber.org/dig v1.18.0
 	gorm.io/driver/postgres v1.5.11
