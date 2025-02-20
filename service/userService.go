@@ -7,12 +7,13 @@ import (
 )
 
 type UserService struct {
-	userRepository *repository.UserRepository
-	userMapper     *mapper.UserMapper
+	userRepository      *repository.UserRepository
+	userMapper          *mapper.UserMapper
+	subscriptionService *SubscriptionService
 }
 
-func NewUserService(ur *repository.UserRepository, um *mapper.UserMapper) *UserService {
-	return &UserService{userRepository: ur, userMapper: um}
+func NewUserService(ur *repository.UserRepository, um *mapper.UserMapper, ss *SubscriptionService) *UserService {
+	return &UserService{userRepository: ur, userMapper: um, subscriptionService: ss}
 }
 
 func (us UserService) CreateUser(request web.UserRequest) int {
@@ -29,7 +30,9 @@ func (us UserService) FindById(id int) (web.UserResponse, error) {
 		return response, err
 	}
 
-	response = us.userMapper.ToUserResponse(user)
+	subscriptions := us.subscriptionService.GetUserSubscriptions(id)
+
+	response = us.userMapper.ToUserResponse(user, subscriptions)
 
 	return response, nil
 }
