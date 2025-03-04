@@ -23,7 +23,7 @@ func (uc UserController) FindUserById(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	}
 
-	response, err := uc.userService.FindById(id)
+	response, err := uc.userService.FindById(c, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 	}

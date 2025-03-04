@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
 	"log"
 	"math/rand"
 	"time"
@@ -15,29 +16,39 @@ func NewSubscriptionService() *SubscriptionService {
 	return &SubscriptionService{}
 }
 
-func (ss SubscriptionService) GetUserSubscriptions(userId int) []dto.UserSubscriptionDto {
-	ctxWithTimeout, cancelFunc := context.WithTimeout(context.Background(), 5*time.Second)
+func (ss SubscriptionService) GetUserSubscriptions(c *gin.Context, userId int) []dto.UserSubscriptionDto {
+	ctxWithTimeout, cancelFunc := context.WithTimeout(c, 5*time.Second)
 	defer cancelFunc()
 
-	responseChan := make(chan []dto.UserSubscriptionDto, 1)
+	responseChan := make(chan struct {
+		data []dto.UserSubscriptionDto
+		err  error
+	}, 1)
 
 	go func() {
 		response, err := ss.fetchUserSubscriptions(userId)
 		if err != nil {
 			log.Println("Api call error:", err)
-			responseChan <- []dto.UserSubscriptionDto{}
-			return
 		}
 
-		responseChan <- response
+		responseChan <- struct {
+			data []dto.UserSubscriptionDto
+			err  error
+		}{response, err}
 	}()
 
 	select {
+
 	case response := <-responseChan:
-		return response
+		if response.err != nil {
+			return []dto.UserSubscriptionDto{}
+		}
+		return response.data
+
 	case <-ctxWithTimeout.Done():
 		log.Println("Api call timeout")
 		return []dto.UserSubscriptionDto{}
+
 	}
 }
 

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/gin-gonic/gin"
 	"web-service-gin/mapper"
 	"web-service-gin/model/web"
 	"web-service-gin/repository"
@@ -22,7 +23,7 @@ func (us UserService) CreateUser(request web.UserRequest) int {
 	return us.userRepository.Save(&user)
 }
 
-func (us UserService) FindById(id int) (web.UserResponse, error) {
+func (us UserService) FindById(c *gin.Context, id int) (web.UserResponse, error) {
 	var response web.UserResponse
 
 	user, err := us.userRepository.FindById(int64(id))
@@ -30,7 +31,7 @@ func (us UserService) FindById(id int) (web.UserResponse, error) {
 		return response, err
 	}
 
-	subscriptions := us.subscriptionService.GetUserSubscriptions(id)
+	subscriptions := us.subscriptionService.GetUserSubscriptions(c, id)
 
 	response = us.userMapper.ToUserResponse(user, subscriptions)
 
